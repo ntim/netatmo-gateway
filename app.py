@@ -58,7 +58,7 @@ def redact_sensitive_data(obj):
 def get_stations_data():
     params = {
         'access_token': authenticate(),
-        'device_id': '70:ee:50:3f:23:7a'
+        'device_id': os.environ.get('DEVICE_ID')
     }
     try:
         response = requests.post(

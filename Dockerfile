@@ -8,4 +8,5 @@ ENV USERNAME email
 ENV PASSWORD changeme
 ENV CLIENT_ID client_id
 ENV CLIENT_SECRET client_secret
+ENV DEVICE_ID device_id
 CMD [ "python", "./app.py" ]
