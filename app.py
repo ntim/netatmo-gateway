@@ -1,8 +1,8 @@
-# This code sample uses requests (HTTP library)
 import requests
-import japronto
+import flask
 import os
 
+app = flask.Flask(__name__)
 
 REDACTED_FIELDS = ['_id',
                    'cipher_id',
@@ -70,12 +70,6 @@ def get_stations_data():
         print(error.response.status_code, error.response.text)
     return None
 
-
-def main(request):
-    return request.Response(json=get_stations_data())
-
-
-if __name__ == '__main__':
-    app = japronto.Application()
-    app.router.add_route('/', main)
-    app.run(debug=True)
+@app.route('/')
+def main():
+    return flask.jsonify(get_stations_data())
