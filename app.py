@@ -1,6 +1,8 @@
 import requests
 import flask
 import os
+import sys
+import json
 
 app = flask.Flask(__name__)
 
@@ -27,12 +29,16 @@ def authenticate():
                    'scope': 'read_station'
                    }
         response = requests.post(
-            "https://api.netatmo.com/oauth2/token", data=payload)
+            'https://api.netatmo.com/oauth2/token', data=payload)
         response.raise_for_status()
-        access_token = response.json()["access_token"]
+        access_token = response.json()['access_token']
         return access_token
     except requests.exceptions.HTTPError as error:
-        print(error.response.status_code, error.response.text)
+        app.logger.error('POST https://api.netatmo.com/oauth2/token: ' + json.dumps(payload))
+        app.logger.error(error.response.status_code, error.response.text)
+    except:
+        app.logger.error('POST https://api.netatmo.com/oauth2/token: ' + json.dumps(payload))
+        app.logger.error('Unexpected error:', sys.exc_info()[0])
     return None
 
 
@@ -67,7 +73,11 @@ def get_stations_data():
         devices = response.json()['body']
         return redact_sensitive_data(devices)
     except requests.exceptions.HTTPError as error:
-        print(error.response.status_code, error.response.text)
+        app.logger.error('POST https://api.netatmo.com/api/getstationsdata: ' + json.dumps(params))
+        app.logger.error(error.response.status_code, error.response.text)
+    except:
+        app.logger.error('POST https://api.netatmo.com/api/getstationsdata: ' + json.dumps(params))
+        app.logger.error('Unexpected error:', sys.exc_info()[0])
     return None
 
 @app.route('/')
